@@ -26,6 +26,9 @@ patch -N -r - lcc/src/bind.c movfuscator/bind.patch
 # Add the new backend to the frontend
 patch -N -r - lcc/makefile movfuscator/makefile.patch
 
+# Fix alignment issue on 64-bit platforms
+patch -N -r - lcc/src/alloc.c movfuscator/alloc.patch
+
 # Make LCC more lenient with pointer and const violations that pervade everything
 patch -N -r - lcc/src/enode.c movfuscator/enode.patch
 
@@ -39,10 +42,10 @@ patch -N -r - lcc/src/expr.c movfuscator/expr.patch
 patch -N -r - lcc/etc/lcc.c movfuscator/lcc.patch
 
 # Build the compiler driver
-make -C lcc HOSTFILE=../movfuscator/host.c CFLAGS="$HOST_CFLAGS"' -DLCCDIR=\"$(BUILDDIR)/\"' lcc
+make LDFLAGS="-fsanitize=address,undefined" -C lcc HOSTFILE=../movfuscator/host.c CFLAGS="$HOST_CFLAGS"' -DLCCDIR=\"$(BUILDDIR)/\"' lcc
 
 # Build lcc with the M/o/Vfuscator backend
-make -C lcc CFLAGS="$HOST_CFLAGS" all
+make LDFLAGS="-fsanitize=address,undefined" -C lcc CFLAGS="$HOST_CFLAGS" all
 
 # Create movcc
 ln -sfn "$BUILDDIR/lcc" "$BUILDDIR/movcc"

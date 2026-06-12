@@ -1,0 +1,10 @@
+--- src/alloc.c
++++ src/alloc.c
+@@ -10,6 +10,7 @@
+ 	char *p;
+ 	double d;
+ 	int (*f)(void);
++	long double ld;
+ };
+ union header {
+ 	struct block b;
