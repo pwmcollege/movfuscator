@@ -1,0 +1,6 @@
+.git
+build
+lcc
+softfloat/*.o
+softfloat/timesoftfloat
+movfuscator/lib/*.o

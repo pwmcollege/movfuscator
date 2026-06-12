@@ -1,6 +1,8 @@
 #!/bin/sh
 
+set -e
 set -v
+: "${HOST_CFLAGS:=-g -O2 -std=gnu89 -fcommon -fno-strict-aliasing -D_FORTIFY_SOURCE=2}"
 
 # grab the frontend
 [ ! -d "lcc" ] && git clone https://github.com/drh/lcc
@@ -14,9 +16,9 @@ mkdir -p "$BUILDDIR"
 mkdir -p "$BUILDDIR/include"
 cp -p -R lcc/include/x86/linux/* "$BUILDDIR/include"
 
-# Link to gcc's library directory
-GCCLN=$(gcc --print-search-dirs | grep install | head -1 | cut -d " " -f 2-)
-ln -sfn "$GCCLN" "$BUILDDIR/gcc"
+mkdir -p "$BUILDDIR/gcc/include" "$BUILDDIR/gcc/32"
+cp -p -R "$(gcc -print-file-name=include)/." "$BUILDDIR/gcc/include/"
+cp -p "$(gcc -m32 -print-file-name=libgcc.a)" "$BUILDDIR/gcc/32/libgcc.a"
 
 # Bind to the backend
 patch -N -r - lcc/src/bind.c movfuscator/bind.patch
@@ -37,10 +39,10 @@ patch -N -r - lcc/src/expr.c movfuscator/expr.patch
 patch -N -r - lcc/etc/lcc.c movfuscator/lcc.patch
 
 # Build the compiler driver
-make -C lcc HOSTFILE=../movfuscator/host.c CFLAGS='-g -DLCCDIR=\"$(BUILDDIR)/\"' lcc
+make -C lcc HOSTFILE=../movfuscator/host.c CFLAGS="$HOST_CFLAGS"' -DLCCDIR=\"$(BUILDDIR)/\"' lcc
 
 # Build lcc with the M/o/Vfuscator backend
-make -C lcc all
+make -C lcc CFLAGS="$HOST_CFLAGS" all
 
 # Create movcc
 ln -sfn "$BUILDDIR/lcc" "$BUILDDIR/movcc"
