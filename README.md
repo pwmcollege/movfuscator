@@ -110,6 +110,10 @@ Available Ubuntu tags:
 - pwmcollege/movcc:24.04
 - pwmcollege/movcc:26.04
 
+CI builds the Ubuntu versions listed in `.github/docker/ubuntu-versions.json`.
+Add a new Ubuntu version to that file to publish another tag. The last entry in
+the list is also published as `pwmcollege/movcc:latest`.
+
 Build an image locally with a specific Ubuntu base:
 
 ```bash
@@ -382,9 +386,9 @@ A: I thought it would be funny.
 
 - Slides outlining the mechanisms used are [here](slides/domas_2015_the_movfuscator.pdf).
 
-- The inspiration for the compiler is the paper ["mov is Turing-complete",
-  by Stephen Dolan](http://stedolan.net/research/mov.pdf).
+- The inspiration for the compiler is the paper ["mov is Turing-complete", by Stephen Dolan]([http://stedolan.net/research/mov.pdf](https://web.archive.org/web/20181123200958/stedolan.net/research/mov.pdf)).
 
-## Author
+## Authors
 
-- chris domas, @xoreaxeaxeax
+- chris domas
+- @xoreaxeaxeax
